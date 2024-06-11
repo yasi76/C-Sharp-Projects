@@ -1,0 +1,75 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static List<Task> tasks = new List<Task>();
+
+    static void Main()
+    {
+        while (true)
+        {
+            Console.WriteLine("Choose an option: 1. Add Task 2. Remove Task 3. List Tasks 4. Exit");
+            var choice = Console.ReadLine();
+
+            switch (choice)
+            {
+                case "1":
+                    AddTask();
+                    break;
+                case "2":
+                    RemoveTask();
+                    break;
+                case "3":
+                    ListTasks();
+                    break;
+                case "4":
+                    return;
+                default:
+                    Console.WriteLine("Invalid choice.");
+                    break;
+            }
+        }
+    }
+
+    static void AddTask()
+    {
+        Console.WriteLine("Enter task description:");
+        var description = Console.ReadLine();
+        tasks.Add(new Task { Id = tasks.Count + 1, Description = description, IsCompleted = false });
+        Console.WriteLine("Task added.");
+    }
+
+    static void RemoveTask()
+    {
+        Console.WriteLine("Enter task ID to remove:");
+        if (int.TryParse(Console.ReadLine(), out int taskId))
+        {
+            var task = tasks.Find(t => t.Id == taskId);
+            if (task != null)
+            {
+                tasks.Remove(task);
+                Console.WriteLine("Task removed.");
+            }
+            else
+            {
+                Console.WriteLine("Task not found.");
+            }
+        }
+    }
+
+    static void ListTasks()
+    {
+        foreach (var task in tasks)
+        {
+            Console.WriteLine($"{task.Id}. {task.Description} (Completed: {task.IsCompleted})");
+        }
+    }
+}
+
+class Task
+{
+    public int Id { get; set; }
+    public string Description { get; set; }
+    public bool IsCompleted { get; set; }
+}
