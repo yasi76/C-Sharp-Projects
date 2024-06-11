@@ -1,0 +1,89 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static List<Note> notes = new List<Note>();
+
+    static void Main()
+    {
+        while (true)
+        {
+            Console.WriteLine("Choose an option: 1. Add Note 2. View Notes 3. Delete Note 4. Exit");
+            var choice = Console.ReadLine();
+
+            switch (choice)
+            {
+                case "1":
+                    AddNote();
+                    break;
+                case "2":
+                    ViewNotes();
+                    break;
+                case "3":
+                    DeleteNote();
+                    break;
+                case "4":
+                    return;
+                default:
+                    Console.WriteLine("Invalid choice.");
+                    break;
+            }
+        }
+    }
+
+    static void AddNote()
+    {
+        Console.WriteLine("Enter note title:");
+        var title = Console.ReadLine();
+        Console.WriteLine("Enter note content:");
+        var content = Console.ReadLine();
+
+        notes.Add(new Note { Id = notes.Count + 1, Title = title, Content = content });
+        Console.WriteLine("Note added.");
+    }
+
+    static void ViewNotes()
+    {
+        if (notes.Count == 0)
+        {
+            Console.WriteLine("No notes available.");
+        }
+        else
+        {
+            foreach (var note in notes)
+            {
+                Console.WriteLine($"ID: {note.Id}, Title: {note.Title}, Content: {note.Content}");
+            }
+        }
+    }
+
+    static void DeleteNote()
+    {
+        Console.WriteLine("Enter note ID to delete:");
+        if (int.TryParse(Console.ReadLine(), out int noteId))
+        {
+            var note = notes.Find(n => n.Id == noteId);
+            if (note != null)
+            {
+                notes.Remove(note);
+                Console.WriteLine("Note deleted.");
+            }
+            else
+            {
+                Console.WriteLine("Note not found.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Invalid ID.");
+        }
+    }
+}
+
+class Note
+{
+    public int Id { get; set; }
+    public string Title { get; set; }
+    public string Content { get; set; }
+}
