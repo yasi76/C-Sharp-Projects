@@ -1,0 +1,102 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program
+{
+    static List<Student> students = new List<Student>();
+
+    static void Main()
+    {
+        while (true)
+        {
+            Console.WriteLine("Choose an option: 1. Add Student 2. Add Grade 3. View Students 4. View Student Report 5. Exit");
+            string choice = Console.ReadLine();
+
+            switch (choice)
+            {
+                case "1":
+                    AddStudent();
+                    break;
+                case "2":
+                    AddGrade();
+                    break;
+                case "3":
+                    ViewStudents();
+                    break;
+                case "4":
+                    ViewStudentReport();
+                    break;
+                case "5":
+                    return;
+                default:
+                    Console.WriteLine("Invalid choice.");
+                    break;
+            }
+        }
+    }
+
+    static void AddStudent()
+    {
+        Console.WriteLine("Enter student name:");
+        string name = Console.ReadLine();
+
+        students.Add(new Student { Name = name, Grades = new List<double>() });
+        Console.WriteLine("Student added.");
+    }
+
+    static void AddGrade()
+    {
+        Console.WriteLine("Enter student name:");
+        string name = Console.ReadLine();
+        var student = students.Find(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+        if (student != null)
+        {
+            Console.WriteLine("Enter grade:");
+            double grade = Convert.ToDouble(Console.ReadLine());
+            student.Grades.Add(grade);
+            Console.WriteLine("Grade added.");
+        }
+        else
+        {
+            Console.WriteLine("Student not found.");
+        }
+    }
+
+    static void ViewStudents()
+    {
+        Console.WriteLine("Students:");
+        foreach (var student in students)
+        {
+            Console.WriteLine($"Name: {student.Name}, Average Grade: {student.Grades.Average()}");
+        }
+    }
+
+    static void ViewStudentReport()
+    {
+        Console.WriteLine("Enter student name:");
+        string name = Console.ReadLine();
+        var student = students.Find(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+        if (student != null)
+        {
+            Console.WriteLine($"Student: {student.Name}");
+            foreach (var grade in student.Grades)
+            {
+                Console.WriteLine($"Grade: {grade}");
+            }
+            Console.WriteLine($"Average Grade: {student.Grades.Average()}");
+        }
+        else
+        {
+            Console.WriteLine("Student not found.");
+        }
+    }
+}
+
+class Student
+{
+    public string Name { get; set; }
+    public List<double> Grades { get; set; }
+}
