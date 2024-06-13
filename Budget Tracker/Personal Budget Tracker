@@ -1,0 +1,171 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+
+
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        BudgetTracker budgetTracker = new BudgetTracker();
+
+        while (true)
+        {
+            Console.WriteLine("Choose an option:");
+            Console.WriteLine("1. Add Transaction");
+            Console.WriteLine("2. View Transactions");
+            Console.WriteLine("3. Generate Summary");
+            Console.WriteLine("4. Exit");
+
+            string input = Console.ReadLine();
+
+            switch (input)
+            {
+                case "1":
+                    Console.WriteLine("Adding new transaction...");
+                    budgetTracker.AddTransaction();
+                    break;
+                case "2":
+                    Console.WriteLine("Viewing transactions...");
+                    budgetTracker.ViewTransactions();
+                    break;
+                case "3":
+                    Console.WriteLine("Generating summary...");
+                    budgetTracker.GenerateSummary();
+                    break;
+                case "4":
+                    Console.WriteLine("Exiting application...");
+                    return;
+                default:
+                    Console.WriteLine("Invalid option. Please choose again.");
+                    break;
+            }
+
+            Console.WriteLine(); // Add an empty line for readability
+        }
+    }
+}
+
+public enum TransactionType
+{
+    Income,
+    Expense
+}
+
+public class Transaction
+{
+    public DateTime Date { get; set; }
+    public decimal Amount { get; set; }
+    public TransactionType Type { get; set; }
+    public string Description { get; set; }
+
+    public Transaction(DateTime date, decimal amount, TransactionType type, string description)
+    {
+        Date = date;
+        Amount = amount;
+        Type = type;
+        Description = description;
+    }
+}
+
+public class BudgetTracker
+{
+    private List<Transaction> transactions;
+
+    public BudgetTracker()
+    {
+        transactions = new List<Transaction>();
+    }
+
+    public void AddTransaction()
+    {
+        Console.WriteLine("Enter the date of the transaction (YYYY-MM-DD):");
+        string dateString = Console.ReadLine();
+        DateTime dDate;
+
+        if (!DateTime.TryParse(dateString, out dDate))
+        {
+            Console.WriteLine("Invalid date format.");
+            return; // Exit method if date parsing fails
+        }
+
+        Console.WriteLine("Enter the amount of the transaction:");
+        string amountString = Console.ReadLine();
+        decimal dAmount;
+
+        if (!decimal.TryParse(amountString, out dAmount))
+        {
+            Console.WriteLine("Invalid amount format.");
+            return; // Exit method if amount parsing fails
+        }
+
+        Console.WriteLine("Enter the type of the transaction (Income/Expense):");
+        string typeString = Console.ReadLine();
+        TransactionType type;
+
+        if (!Enum.TryParse<TransactionType>(typeString, out type))
+        {
+            Console.WriteLine("Invalid transaction type.");
+            return; // Exit method if transaction type parsing fails
+        }
+
+        Console.WriteLine("Enter the description of the transaction:");
+        string descriptionString = Console.ReadLine();
+
+        if (string.IsNullOrEmpty(descriptionString))
+        {
+            Console.WriteLine("Invalid description.");
+            return; // Exit method if description is empty
+        }
+
+        // Create and add transaction to list
+        Transaction newTransaction = new Transaction(dDate, dAmount, type, descriptionString);
+        transactions.Add(newTransaction);
+
+        Console.WriteLine("Transaction added successfully!");
+    }
+
+    public void ViewTransactions()
+    {
+        if (transactions.Count > 0)
+        {
+            Console.WriteLine("Transactions:");
+            foreach (var transaction in transactions)
+            {
+                Console.WriteLine($"Date: {transaction.Date.ToShortDateString()}, Amount: {transaction.Amount}, Type: {transaction.Type}, Description: {transaction.Description}");
+            }
+        }
+        else
+        {
+            Console.WriteLine("No transactions to display.");
+        }
+    }
+
+    public void GenerateSummary()
+    {
+        decimal totalIncome = 0;
+        decimal totalExpense = 0;
+        foreach (var transaction in transactions)
+        {
+            if (transaction.Type == TransactionType.Income)
+            {
+                totalIncome += transaction.Amount;
+            }
+            else if (transaction.Type == TransactionType.Expense)
+            {
+                totalExpense += transaction.Amount;
+            }
+        }
+
+        // Display summary
+        Console.WriteLine();
+        Console.WriteLine("Summary:");
+        Console.WriteLine($"Total Income: {totalIncome}");
+        Console.WriteLine($"Total Expenses: {totalExpense}");
+        Console.WriteLine($"Net Balance: {totalIncome - totalExpense}");
+    }
+
+
+}
